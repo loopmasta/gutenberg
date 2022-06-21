@@ -77,6 +77,21 @@ const hasTextColorSupport = ( blockType ) => {
 };
 
 /**
+ * Get a text color label via supports API key '__experimentalTextLabel'
+ * 
+ * @param {string} blockType 
+ * @returns {string} A i18n text color label
+ */
+const getTextColorLabel = ( blockType ) => {
+	const colorSupport = getBlockSupport( blockType, COLOR_SUPPORT_KEY );
+	return colorSupport &&
+		colorSupport.text !== false &&
+		'__experimentalTextLabel' in colorSupport
+		? colorSupport.__experimentalTextLabel
+		: null;
+}
+
+/**
  * Clears a single color property from a style object.
  *
  * @param {Array}  path  Path to color property to clear within styles object.
@@ -460,7 +475,7 @@ export function ColorEdit( props ) {
 				...( hasTextColor
 					? [
 							{
-								label: __( 'Text' ),
+								label: getTextColorLabel( props.name ) || __( 'Text' ),
 								onColorChange: onChangeColor( 'text' ),
 								colorValue: getColorObjectByAttributeValues(
 									allSolids,
